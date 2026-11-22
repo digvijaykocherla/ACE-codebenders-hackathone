@@ -51,12 +51,14 @@ export default function Prescriptions() {
     }
     setSaving(true);
     try {
+      const now = new Date();
+      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
       await createPrescription(recipientId, {
-        medication: form.medication.trim(),
-        dosage: form.dosage.trim() || null,
-        instructions: form.instructions.trim() || null,
-        prescriber: form.prescriber.trim() || null,
+        medicine_name: form.medication.trim(),
+        dosage_text: form.dosage.trim() || null,
+        prescribed_by: form.prescriber.trim() || null,
         refills_remaining: Number(form.refills_remaining) || 0,
+        start_date: today,
       });
       setForm(EMPTY_FORM);
       await load();
@@ -78,13 +80,12 @@ export default function Prescriptions() {
             {items.map((p) => (
               <li key={p.id} className="list-item">
                 <div>
-                  <strong>{p.medication ?? p.name}</strong>
-                  {p.dosage && <span className="muted"> · {p.dosage}</span>}
+                  <strong>{p.medicine_name}</strong>
+                  {p.dosage_text && <span className="muted"> · {p.dosage_text}</span>}
                   <div className="muted small">
                     Refills remaining: {p.refills_remaining ?? '—'}
-                    {p.prescriber ? ` · ${p.prescriber}` : ''}
+                    {p.prescribed_by ? ` · ${p.prescribed_by}` : ''}
                   </div>
-                  {p.instructions && <div className="small">{p.instructions}</div>}
                 </div>
                 <div className="row-gap">
                   {flagged.has(p.id) && <span className="badge badge-warn">Refill due</span>}
@@ -100,7 +101,7 @@ export default function Prescriptions() {
           <ul className="list">
             {refills.map((r, i) => (
               <li key={r.id ?? i} className="small">
-                {r.medication ?? r.name ?? 'Prescription'} · due {fmtDate(r.refill_due_at ?? r.due_at)}
+                {r.prescription.medicine_name ?? 'Prescription'} · due {fmtDate(r.refill_due_at ?? r.due_at)}
               </li>
             ))}
           </ul>

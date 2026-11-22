@@ -80,7 +80,7 @@ export const updateAppointment = (rid, itemId, data) =>
 // Prescriptions and refills
 export const listPrescriptions = (rid) => get(`/care-recipients/${rid}/prescriptions`);
 export const createPrescription = (rid, data) => post(`/care-recipients/${rid}/prescriptions`, data);
-export const getRefills = (rid) => get(`/care-recipients/${rid}/refills`);
+export const getRefills = (rid) => get(`/care-recipients/${rid}/prescriptions/refills`);
 
 // Reports
 export const listReports = (rid) => get(`/care-recipients/${rid}/reports`);
